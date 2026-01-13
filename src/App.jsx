@@ -1,11 +1,27 @@
+import {Outlet, Route, Routes} from "react-router-dom"
 import "./app.css"
+import { NavBar } from "./components/nav/NavBar.jsx"
 import { CustomerList } from "./components/customers/CustomersList"
 import { EmployeeList } from "./components/employees/EmployeeList"
 import { TicketList } from "./components/tickets/TicketList"
+import { Welcome } from "./components/welcome/Welcome.jsx"
 
 export const App = () => {
-
-    return <>
-        <EmployeeList />
-    </>
+    return (
+        <Routes>
+            <Route
+                path="/"
+                element={
+                    <>
+                        <NavBar />
+                        <Outlet />
+                    </>
+                } >
+                <Route index element={<Welcome />} />
+                <Route path="tickets" element={<TicketList />} />
+                <Route path="employees" element={<EmployeeList />} />
+                <Route path="customers" element={<CustomerList />} />
+            </Route>
+        </Routes>
+    )
 }
