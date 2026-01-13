@@ -6,6 +6,7 @@ import { EmployeeList } from "./components/employees/EmployeeList"
 import { TicketList } from "./components/tickets/TicketList"
 import { Welcome } from "./components/welcome/Welcome.jsx"
 import { CustomerDetails } from "./components/customers/CustomerDetails.jsx"
+import { EmployeeDetails } from "./components/employees/EmployeeDetails.jsx"
 
 export const App = () => {
     return (
@@ -24,6 +25,10 @@ export const App = () => {
                 <Route path="customers">
                     <Route index element={<CustomerList />} />
                     <Route path=":customerId" element={<CustomerDetails />} />
+                </Route>
+                <Route path="employees">
+                    <Route index element={<EmployeeList />} />
+                    <Route path=":employeeId" element={<EmployeeDetails />} />
                 </Route>
             </Route>
         </Routes>
