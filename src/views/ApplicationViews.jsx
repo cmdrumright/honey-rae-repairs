@@ -1,45 +1,20 @@
-import { Outlet, Route, Routes} from "react-router-dom"
-import { NavBar } from "../components/nav/NavBar.jsx"
-import { CustomerList } from "../components/customers/CustomersList"
-import { EmployeeList } from "../components/employees/EmployeeList"
-import { TicketList } from "../components/tickets/TicketList"
-import { Welcome } from "../components/welcome/Welcome.jsx"
-import { CustomerDetails } from "../components/customers/CustomerDetails.jsx"
-import { EmployeeDetails } from "../components/employees/EmployeeDetails.jsx"
-import { useEffect, useState } from "react"
-import { EmployeeForm } from "../components/forms/EmployeeForm.jsx"
+import { EmployeeViews } from './EmployeeViews.jsx'
+import { CustomerViews } from './CustomerViews.jsx'
+import { useEffect, useState } from 'react'
 
 export const ApplicationViews = () => {
-    const [currentUser, setCurrentUser] = useState({})
-    
-    useEffect(() => {
-        const localHoneyUser = localStorage.getItem("honey_user")
-        const honeyUserObject = JSON.parse(localHoneyUser)
+  const [currentUser, setCurrentUser] = useState({})
 
-        setCurrentUser(honeyUserObject)
-    }, [])
+  useEffect(() => {
+    const localHoneyUser = localStorage.getItem('honey_user')
+    const honeyUserObject = JSON.parse(localHoneyUser)
 
-  return <Routes>
-    <Route
-        path="/"
-        element={
-            <>
-                <NavBar />
-                <Outlet />
-            </>
-        } >
-        <Route index element={<Welcome />} />
-        <Route path="tickets" element={<TicketList currentUser={currentUser}/>} />
-        <Route path="employees" element={<EmployeeList />} />
-        <Route path="customers">
-            <Route index element={<CustomerList />} />
-            <Route path=":customerId" element={<CustomerDetails />} />
-        </Route>
-        <Route path="employees">
-            <Route index element={<EmployeeList />} />
-            <Route path=":employeeId" element={<EmployeeDetails />} />
-        </Route>
-        <Route path="profile" element={<EmployeeForm currentUser={currentUser} />} />
-    </Route>
-  </Routes>
+    setCurrentUser(honeyUserObject)
+  }, [])
+
+  return currentUser.isStaff ? (
+    <EmployeeViews currentUser={currentUser} />
+  ) : (
+    <CustomerViews currentUser={currentUser} />
+  )
 }
