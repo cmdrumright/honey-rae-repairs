@@ -1,47 +1,70 @@
-import { useEffect, useState } from "react"
-import { getAllTickets } from "../../services/ticketService"
+import { useEffect, useState } from 'react'
+import { getAllTickets } from '../../services/ticketService'
 
-import "./Tickets.css"
-import { Ticket } from "./Ticket"
-import { FilterBar } from "./FilterBar"
+import './Tickets.css'
+import { Ticket } from './Ticket'
+import { FilterBar } from './FilterBar'
 
-export const TicketList = ({currentUser}) => {
-    const [allTickets, setAllTickets] = useState([])
-    const [showEmergencyOnly, setShowEmergencyOnly] = useState(false)
-    const [filteredTickets, setFilteredTickets] = useState([])
-    const [searchTerm, setSearchTerm] = useState("")
-    
-    const getAndSetTickets = () => {
-        getAllTickets().then((ticketArray) => {
-            setAllTickets(ticketArray)
-        })
+export const TicketList = ({ currentUser }) => {
+  const [allTickets, setAllTickets] = useState([])
+  const [showEmergencyOnly, setShowEmergencyOnly] = useState(false)
+  const [filteredTickets, setFilteredTickets] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const getAndSetTickets = () => {
+    getAllTickets().then((ticketArray) => {
+      if (currentUser.isStaff) {
+        setAllTickets(ticketArray)
+      } else {
+        const customerTickets = ticketArray.filter(
+          (ticket) => ticket.userId === currentUser.id
+        )
+        setAllTickets(customerTickets)
+      }
+    })
+  }
+
+  useEffect(() => {
+    getAndSetTickets()
+  }, [currentUser]) // only runs on initial render of component
+
+  useEffect(() => {
+    if (showEmergencyOnly) {
+      const emergencyTickets = allTickets.filter(
+        (ticket) => ticket.emergency === true
+      )
+      setFilteredTickets(emergencyTickets)
+    } else {
+      setFilteredTickets(allTickets)
     }
+  }, [showEmergencyOnly, allTickets])
 
-    useEffect(() => {
-        getAndSetTickets()
-    }, []) // only runs on initial render of component
+  useEffect(() => {
+    const foundTickets = allTickets.filter((ticket) =>
+      ticket.description.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    setFilteredTickets(foundTickets)
+  }, [searchTerm, allTickets])
 
-    useEffect(() => {
-        if (showEmergencyOnly) {
-            const emergencyTickets = allTickets.filter(ticket => ticket.emergency === true)
-            setFilteredTickets(emergencyTickets)
-        } else {
-            setFilteredTickets(allTickets)
-        }
-    }, [showEmergencyOnly, allTickets])
-
-    useEffect(() => {
-        const foundTickets = allTickets.filter((ticket) => ticket.description.toLowerCase().includes(searchTerm.toLowerCase()))
-        setFilteredTickets(foundTickets)
-    }, [searchTerm, allTickets])
-
-    return <div className="tickets-container">
-        <h2>Tickets</h2>
-        <FilterBar setShowEmergencyOnly={setShowEmergencyOnly} setSearchTerm={setSearchTerm}/>
-        <article className="tickets">
-            {filteredTickets.map(ticketObj => {
-                return <Ticket ticket={ticketObj} currentUser={currentUser} getAndSetTickets={getAndSetTickets} key={ticketObj.id} />
-            })}
-        </article>
+  return (
+    <div className="tickets-container">
+      <h2>Tickets</h2>
+      <FilterBar
+        setShowEmergencyOnly={setShowEmergencyOnly}
+        setSearchTerm={setSearchTerm}
+      />
+      <article className="tickets">
+        {filteredTickets.map((ticketObj) => {
+          return (
+            <Ticket
+              ticket={ticketObj}
+              currentUser={currentUser}
+              getAndSetTickets={getAndSetTickets}
+              key={ticketObj.id}
+            />
+          )
+        })}
+      </article>
     </div>
+  )
 }
