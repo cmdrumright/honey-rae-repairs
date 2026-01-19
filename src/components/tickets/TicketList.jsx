@@ -26,7 +26,7 @@ export const TicketList = ({ currentUser }) => {
 
   useEffect(() => {
     getAndSetTickets()
-  }, [currentUser]) // only runs on initial render of component
+  }, [currentUser]) // only runs on initial render and when currentUser changes
 
   useEffect(() => {
     let newFilteredTickets = structuredClone(allTickets)
