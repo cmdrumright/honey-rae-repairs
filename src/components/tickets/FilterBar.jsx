@@ -1,9 +1,13 @@
+import { useNavigate } from 'react-router-dom'
+
 export const FilterBar = ({
   setShowEmergencyOnly,
   setShowOpenOnly,
   setSearchTerm,
   currentUser,
 }) => {
+  const navigate = useNavigate()
+
   return (
     <div className="filter-bar">
       {currentUser.isStaff ? (
@@ -38,7 +42,7 @@ export const FilterBar = ({
           <button
             className="filter-btn btn-primary"
             onClick={() => {
-              setShowEmergencyOnly(true)
+              navigate('/tickets/create')
             }}
           >
             Create Ticket

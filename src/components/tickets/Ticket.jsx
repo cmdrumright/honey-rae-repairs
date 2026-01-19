@@ -86,12 +86,10 @@ export const Ticket = ({ ticket, currentUser, getAndSetTickets }) => {
           ) : (
             ''
           )}
-          {!currentUser.isStaff ? (
+          {!currentUser.isStaff && (
             <button className="btn btn-warning" onClick={handleDelete}>
               Delete
             </button>
-          ) : (
-            ''
           )}
         </div>
       </footer>
